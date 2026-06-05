@@ -1,9 +1,7 @@
--- ============================================================
--- SisOficina - Schema DDL + DML
--- Execute com: psql -U postgres -d sisoficina -f schema.sql
--- ============================================================
 
--- Limpeza (ordem reversa das dependencias)
+-- Execute com: psql -U postgres -d sisoficina -f schema.sql
+
+
 DROP TABLE IF EXISTS item_os         CASCADE;
 DROP TABLE IF EXISTS ordem_servico   CASCADE;
 DROP TABLE IF EXISTS peca            CASCADE;
@@ -14,9 +12,7 @@ DROP VIEW  IF EXISTS vw_os_completa  CASCADE;
 DROP FUNCTION  IF EXISTS fn_calcular_total_os(INT) CASCADE;
 DROP PROCEDURE IF EXISTS sp_fechar_os(INT)         CASCADE;
 
--- ============================================================
 -- TABELAS
--- ============================================================
 
 CREATE TABLE cliente (
     id        SERIAL PRIMARY KEY,
@@ -72,9 +68,8 @@ CREATE TABLE item_os (
     preco_unitario_momento NUMERIC(10, 2) NOT NULL
 );
 
--- ============================================================
+
 -- VIEW
--- ============================================================
 
 CREATE VIEW vw_os_completa AS
 SELECT
@@ -93,9 +88,7 @@ JOIN veiculo  v ON os.id_veiculo  = v.id
 JOIN cliente  c ON v.id_cliente   = c.id
 JOIN mecanico m ON os.id_mecanico = m.id;
 
--- ============================================================
 -- FUNCTION
--- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_calcular_total_os(p_id_os INT)
 RETURNS NUMERIC AS $$
@@ -117,9 +110,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- ============================================================
 -- PROCEDURE
--- ============================================================
 
 CREATE OR REPLACE PROCEDURE sp_fechar_os(p_id_os INT)
 LANGUAGE plpgsql AS $$
@@ -167,9 +158,8 @@ WHERE id = p_id_os;
 END;
 $$;
 
--- ============================================================
+
 -- DML — Dados de exemplo
--- ============================================================
 
 INSERT INTO cliente (nome, cpf, telefone, email) VALUES
     ('Joao Silva',     '123.456.789-00', '(11) 99999-0001', 'joao@email.com'),

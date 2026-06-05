@@ -85,14 +85,11 @@ public class OrdemServicoRepository {
             ps.setInt(5, os.getId());
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int idGerado = rs.getInt(1);
-                try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
-                    cs.setInt(1, idGerado);
-                    cs.execute();
-                }
+            try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
+                cs.setInt(1, os.getId());
+                cs.execute();
             }
+
 
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar OS: " + e.getMessage(), e);
