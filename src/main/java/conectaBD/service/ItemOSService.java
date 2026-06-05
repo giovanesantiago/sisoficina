@@ -23,10 +23,6 @@ public class ItemOSService {
         return itemOSRepo.findByOsId(idOs);
     }
 
-    public List<String[]> listarDetalhadoPorOs(int idOs) {
-        return itemOSRepo.findItensByOsIdDetalhado(idOs);
-    }
-
     public void adicionarPeca(int idOs, int idPeca, int quantidade) {
         String status = osRepo.findStatusById(idOs)
             .orElseThrow(() -> new RuntimeException("OS não encontrada com ID: " + idOs));
@@ -60,6 +56,6 @@ public class ItemOSService {
         if (status.equals("CONCLUIDA") || status.equals("CANCELADA"))
             throw new RuntimeException("Não é possível remover peças de uma OS com status " + status + ".");
 
-        itemOSRepo.deleteById(idItem);
+        itemOSRepo.deleteById(item);
     }
 }

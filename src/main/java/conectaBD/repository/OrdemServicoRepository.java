@@ -54,12 +54,22 @@ public class OrdemServicoRepository {
 
     public void save(OrdemServico os) {
         String sql = "INSERT INTO ordem_servico (status, valor_mao_obra, id_veiculo, id_mecanico) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, os.getStatus() != null ? os.getStatus() : "ABERTA");
             ps.setBigDecimal(2, os.getValorMaoObra());
             ps.setInt(3, os.getIdVeiculo());
             ps.setInt(4, os.getIdMecanico());
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                int idGerado = rs.getInt(1);
+                try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
+                    cs.setInt(1, idGerado);
+                    cs.execute();
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao cadastrar OS: " + e.getMessage(), e);
         }
@@ -74,6 +84,16 @@ public class OrdemServicoRepository {
             ps.setInt(4, os.getIdMecanico());
             ps.setInt(5, os.getId());
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                int idGerado = rs.getInt(1);
+                try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
+                    cs.setInt(1, idGerado);
+                    cs.execute();
+                }
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao atualizar OS: " + e.getMessage(), e);
         }

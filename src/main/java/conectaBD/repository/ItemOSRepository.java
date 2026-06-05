@@ -49,16 +49,27 @@ public class ItemOSRepository {
             ps.setInt(3, item.getQuantidade());
             ps.setBigDecimal(4, item.getPrecoUnitarioMomento());
             ps.executeUpdate();
+
+            try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
+                cs.setInt(1, item.getIdOs());
+                cs.execute();
+            }
+
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao adicionar peça à OS: " + e.getMessage(), e);
         }
     }
 
-    public void deleteById(int id) {
+    public void deleteById(ItemOS item) {
         String sql = "DELETE FROM item_os WHERE id = ?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setInt(1, item.getId());
             ps.executeUpdate();
+
+            try (CallableStatement cs = con.prepareCall("CALL sp_atualizar_total_os(?)")) {
+                cs.setInt(1, item.getIdOs());
+                cs.execute();
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao remover item da OS: " + e.getMessage(), e);
         }

@@ -154,6 +154,19 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE PROCEDURE sp_atualizar_total_os(p_id_os INT)
+LANGUAGE plpgsql AS $$
+DECLARE
+v_total NUMERIC;
+BEGIN
+    v_total := fn_calcular_total_os(p_id_os);
+
+UPDATE ordem_servico
+SET valor_total = v_total
+WHERE id = p_id_os;
+END;
+$$;
+
 -- ============================================================
 -- DML — Dados de exemplo
 -- ============================================================
